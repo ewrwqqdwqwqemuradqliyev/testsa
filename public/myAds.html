@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Mənim Elanlarım</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --label-color: #555;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left, .nav-center, .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-left a.logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        .nav-left a.logo:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-left a.logo img {
+            height: 40px;
+            margin-right: 12px;
+        }
+
+        .nav-left a, .nav-right a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            margin-left: 25px;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-left a:hover, .nav-right a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-center .search-box {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background-color: var(--light-bg);
+            max-width: 550px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-center .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            color: var(--text-color);
+            flex-grow: 1;
+        }
+
+        .nav-center .search-box button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-center .search-box button:hover {
+            background-color: #d35400;
+        }
+
+        .profile-menu {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-menu .profile-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 16px;
+            padding: 10px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background-color: var(--light-bg);
+            transition: background-color 0.3s;
+        }
+
+        .profile-menu .profile-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        .profile-menu .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: var(--card-bg);
+            min-width: 220px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+
+        .profile-menu .dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            color: var(--text-color);
+            font-weight: 400;
+            transition: background-color 0.3s;
+            margin: 0;
+        }
+
+        .profile-menu .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .profile-menu .dropdown a i {
+            margin-right: 12px;
+            color: var(--accent-color);
+        }
+
+        .page-container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .ad-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .ad-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .ad-card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .ad-card-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .ad-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .ad-card-location {
+            font-size: 0.9rem;
+            color: var(--label-color);
+            margin-top: auto;
+        }
+
+        .no-ads-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--label-color);
+            padding: 50px;
+        }
+
+        .my-ad-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .my-ad-actions .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .my-ad-actions .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .my-ad-actions .btn-delete {
+            background-color: #c0392b;
+            color: white;
+        }
+
+        .my-ad-actions .btn-edit:hover {
+            background-color: #34495e;
+        }
+
+        .my-ad-actions .btn-delete:hover {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a href="/dashboard" class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Tap.az_logo.svg/2560px-Tap.az_logo.svg.png" alt="Logo">
+            Tap.az
+        </a>
+        <a href="/dashboard">Kataloq</a>
+    </div>
+    <div class="nav-center">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Əşya və ya xidmət axtarışı">
+            <button id="filterBtn">Filterlər</button>
+            <button id="searchBtn">Axtar</button>
+        </div>
+    </div>
+    <div class="nav-right" id="profileMenu">
+        <a href="/addAdPage" class="add-ad-btn">+ Yeni Elan</a>
+        <div class="profile-menu">
+            <a id="profileBtn" class="profile-btn"><i class="fas fa-user-circle"></i> Profil ▾</a>
+            <div class="dropdown" id="profileDropdown">
+                <a href="/myAdsPage"><i class="fas fa-list-alt"></i> Paylaşılan Elanlar</a>
+                <a href="/accountPage"><i class="fas fa-cog"></i> Hesab Məlumatları</a>
+                <a href="/logout"><i class="fas fa-sign-out-alt"></i> Çıxış</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-container">
+    <h1>Mənim Elanlarım</h1>
+    <div id="ads-container" class="ads-grid">
+        </div>
+</div>
+
+<script>
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const adsContainer = document.getElementById('ads-container');
+
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', () => {
+        profileDropdown.style.display = 'none';
+    });
+
+    async function fetchMyAds() {
+        try {
+            const response = await fetch('/getUserAds');
+            if (!response.ok) {
+                throw new Error('Elanları yükləmək mümkün olmadı.');
+            }
+            const ads = await response.json();
+            renderAds(ads);
+        } catch (error) {
+            console.error('Xəta:', error);
+            adsContainer.innerHTML = `<p class="no-ads-message">Elanları yükləyərkən xəta baş verdi: ${error.message}</p>`;
+        }
+    }
+
+    function renderAds(ads) {
+        if (ads.length === 0) {
+            adsContainer.innerHTML = '<p class="no-ads-message">Hələ heç bir elan paylaşmamısınız.</p>';
+            return;
+        }
+
+        adsContainer.innerHTML = '';
+        ads.forEach(ad => {
+            const adCard = document.createElement('div');
+            adCard.className = 'ad-card';
+
+            let priceText;
+            if (ad.ad_type === 'auction') {
+                priceText = `Auksion - ${ad.currentPrice || ad.startPrice || 0} AZN`;
+            } else {
+                priceText = `${ad.buyNowPrice || ad.currentPrice || 0} AZN`;
+            }
+
+            adCard.innerHTML = `
+                <img src="/uploads/${ad.image}" alt="${ad.title}" class="ad-card-image">
+                <div class="ad-card-content">
+                    <h3 class="ad-card-title">${ad.title}</h3>
+                    <p class="ad-card-price">${priceText}</p>
+                    <div class="my-ad-actions">
+                        <button class="btn btn-edit" onclick="window.location.href='/editAd/${ad.id}'">Redaktə et</button>
+                        <button class="btn btn-delete" data-id="${ad.id}">Sil</button>
+                    </div>
+                </div>
+            `;
+            adsContainer.appendChild(adCard);
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const adId = e.target.dataset.id;
+                if (confirm('Əminsiniz ki, bu elanı silmək istəyirsiniz?')) {
+                    try {
+                        const response = await fetch(`/deleteAd/${adId}`, { method: 'DELETE' });
+                        if (response.ok) {
+                            fetchMyAds();
+                        } else {
+                            alert('Elanı silərkən xəta baş verdi.');
+                        }
+                    } catch (error) {
+                        console.error('Xəta:', error);
+                        alert('Elanı silərkən xəta baş verdi.');
+                    }
+                }
+            });
+        });
+    }
+
+    fetchMyAds();
+</script>
+
+</body>
+</html>

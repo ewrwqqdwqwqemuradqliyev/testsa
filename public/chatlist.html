@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Mesajlar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        /* basic */
+        * { box-sizing: border-box; }
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --label-color: #555;
+            --border-color: #e0e0e0;
+        }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left a.logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .chat-container {
+            display: flex;
+            max-width: 1200px;
+            width: 90%;
+            margin: 30px auto;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            flex-grow: 1;
+            min-height: 0;
+        }
+
+        .chat-sidebar {
+            width: 300px;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            background-color: var(--light-bg);
+            overflow-y: auto;
+        }
+
+        .chat-sidebar h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .chat-list { list-style: none; padding: 0; margin: 0; }
+        .chat-list-item {
+            display: flex; flex-direction: column; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: background-color 0.3s;
+        }
+        .chat-list-item:hover, .chat-list-item.active { background-color: #e0e6ed; }
+
+        .chat-recipient-name { font-weight: 600; color: var(--text-color); margin-bottom: 5px; }
+        .chat-ad-title { font-size: 0.9rem; color: var(--label-color); margin-bottom: 5px; }
+        .chat-last-message { font-size: 0.85rem; color: #7f8c8d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .chat-main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #active-chat-window {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            flex-shrink: 0;
+        }
+        .chat-header h3 { margin: 0; font-size: 1.2rem; color: var(--primary-color); }
+
+        /* DÜZƏLİŞ: Mesajları ayrı-ayrı xətlərə qoymaq üçün flex əlavə edilir */
+        #chat-messages {
+            flex: 1 1 auto;
+            min-height: 0;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fcfcfc;
+
+            /* Hər mesaj bloku yeni xətdə olsun */
+            display: flex;
+            flex-direction: column; /* Normal axın (yuxarıdan aşağı) */
+        }
+
+        /* Message konteyneri: Mesaj balonu + vaxt üçün */
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+            max-width: 70%;
+        }
+
+        .message {
+            max-width: 100%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            line-height: 1.4;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+            margin-bottom: 3px; /* Vaxt ilə aradakı məsafə */
+        }
+
+        /* Mesaj vaxtı (timestamp) stili */
+        .timestamp {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            margin-top: 2px;
+        }
+
+        .sent .message {
+            background-color: var(--accent-color);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .received .message {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            border-bottom-left-radius: 5px;
+        }
+
+        /* SENT üçün sağa hizalanma */
+        .sent {
+            align-self: flex-end;
+            align-items: flex-end; /* Vaxtı sağa hizalamaq üçün */
+        }
+
+        /* RECEIVED üçün sola hizalanma */
+        .received {
+            align-self: flex-start;
+            align-items: flex-start; /* Vaxtı sola hizalamaq üçün */
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            background: var(--card-bg);
+            flex: 0 0 auto;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        #send-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        #send-button:hover { background-color: #d35400; }
+
+        .no-chat-selected {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: var(--label-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="/dashboard" class="logo">Tap.az</a>
+            <a href="/dashboard">Kataloq</a>
+        </div>
+        <div class="nav-right" id="profileMenu">
+            <a href="/addAdPage" class="add-ad-btn">+ Yeni Elan</a>
+            <div class="profile-menu">
+                <a href="/chatlist" class="profile-btn"><i class="fas fa-comment-alt"></i> Mesajlar</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-sidebar">
+            <h2>Söhbətlər</h2>
+            <ul id="chat-list" class="chat-list"></ul>
+        </div>
+
+        <div class="chat-main" id="chat-main-area">
+            <div id="no-chat-selected" class="no-chat-selected">Söhbət seçin və ya mesaj yazın.</div>
+
+            <div id="active-chat-window" style="display:none; flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="chat-header">
+                    <h3 id="chat-header-title"></h3>
+                    <p id="chat-header-ad" style="font-size:0.9rem; color:#7f8c8d; margin:0;"></p>
+                </div>
+                <div id="chat-messages"></div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="message-input" placeholder="Mesajınızı yazın..." disabled>
+                    <button id="send-button" disabled>Göndər</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pathSegments = window.location.pathname.split('/');
+        const initialRecipientId = parseInt(pathSegments[2]);
+        const initialAdId = parseInt(pathSegments[3]);
+
+        let currentUserId = null;
+        let activeChatRecipientId = null;
+        let activeChatAdId = null;
+        let socket;
+
+        const chatListElement = document.getElementById('chat-list');
+        const chatMessagesElement = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const chatHeaderTitle = document.getElementById('chat-header-title');
+        const chatHeaderAd = document.getElementById('chat-header-ad');
+        const noChatSelected = document.getElementById('no-chat-selected');
+        const activeChatWindow = document.getElementById('active-chat-window');
+
+        // Vaxtı formatlama funksiyası
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        async function fetchCurrentUser() {
+            try {
+                const response = await fetch('/me');
+                if (!response.ok) throw new Error('Unauthenticated');
+                const user = await response.json();
+                currentUserId = user.id;
+                initializeSocket();
+                fetchChatList();
+            } catch (error) {
+                alert('Zəhmət olmasa, daxil olun.');
+                window.location.href = '/login';
+            }
+        }
+
+        function initializeSocket() {
+            socket = io({ query: { userId: currentUserId } });
+
+            socket.on('connect', () => {
+                if (initialRecipientId && initialAdId) {
+                    setActiveChat(initialRecipientId, initialAdId);
+                }
+            });
+
+            socket.on('newMessage', (message) => {
+                if (message.adId === activeChatAdId && (message.senderId === activeChatRecipientId || message.senderId === currentUserId)) {
+                    // Vaxtı da əlavə edirik
+                    appendMessage(message.message, message.senderId === currentUserId, message.timestamp);
+                }
+                fetchChatList();
+            });
+
+            socket.on('chatError', (data) => {
+                alert("Mesaj göndərilmədi: " + data.message);
+            });
+        }
+
+        async function fetchMessages(recipientId, adId) {
+            try {
+                const response = await fetch(`/api/chats/${recipientId}/${adId}`);
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+                chatMessagesElement.innerHTML = '';
+
+                // Mesajlar yuxarıdan aşağı axsın deyə onları artan sıra ilə göstəririk
+                data.messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)).forEach(msg => {
+                    // Vaxtı da ötürürük
+                    appendMessage(msg.message, msg.senderId === currentUserId, msg.timestamp);
+                });
+
+                scrollToBottom();
+            } catch (error) {
+                chatMessagesElement.innerHTML = `<p style="text-align:center; color:red;">Mesajları yükləyərkən xəta baş verdi.</p>`;
+            }
+        }
+
+        async function fetchChatList() {
+            try {
+                const response = await fetch('/api/chats');
+                if (!response.ok) throw new Error();
+                const chats = await response.json();
+
+                chatListElement.innerHTML = '';
+                if (chats.length === 0) {
+                    chatListElement.innerHTML = '<p style="font-size:0.9rem; color:#7f8c8d;">Hələ heç bir söhbət yoxdur.</p>';
+                }
+
+                chats.forEach(chat => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'chat-list-item';
+                    if (chat.recipientId === activeChatRecipientId && chat.adId === activeChatAdId) {
+                        listItem.classList.add('active');
+                    }
+                    listItem.innerHTML = `
+                        <span class="chat-recipient-name">${chat.recipientName}</span>
+                        <span class="chat-ad-title">${chat.adTitle}</span>
+                        <span class="chat-last-message">${chat.lastMessage}</span>
+                    `;
+                    listItem.addEventListener('click', () => {
+                        setActiveChat(chat.recipientId, chat.adId, chat.recipientName, chat.adTitle);
+                        window.history.pushState({}, '', `/chat/${chat.recipientId}/${chat.adId}`);
+                    });
+                    chatListElement.appendChild(listItem);
+                });
+            } catch (error) {
+                chatListElement.innerHTML = '<p style="font-size:0.9rem; color:red;">Söhbətlər yüklənərkən xəta baş verdi.</p>';
+            }
+        }
+
+        async function setActiveChat(recipientId, adId, recipientName, adTitle) {
+            activeChatRecipientId = recipientId;
+            activeChatAdId = adId;
+
+            noChatSelected.style.display = 'none';
+            activeChatWindow.style.display = 'flex'; // burada flex göstərilir
+
+            // başlıqları göstər
+            if (!recipientName || !adTitle) {
+                try {
+                    const userResp = await fetch(`/api/user/${recipientId}`);
+                    const userData = await userResp.json();
+                    const adResp = await fetch(`/getAdById/${adId}`);
+                    const adData = await adResp.json();
+                    recipientName = userData.username;
+                    adTitle = adData.title;
+                } catch (error) {
+                    recipientName = "Bilinməyən istifadəçi";
+                    adTitle = "Bilinməyən Elan";
+                }
+            }
+
+            chatHeaderTitle.textContent = recipientName;
+            chatHeaderAd.textContent = adTitle;
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+
+            if (socket) {
+                socket.emit('joinChatRoom', { recipientId: activeChatRecipientId, adId: activeChatAdId });
+            }
+
+            fetchMessages(activeChatRecipientId, activeChatAdId);
+            fetchChatList();
+        }
+
+        // Vaxt üçün timestamp parametri əlavə edildi
+        function appendMessage(message, isSent, timestamp = Date.now()) {
+            const containerDiv = document.createElement('div');
+            containerDiv.className = `message-container ${isSent ? 'sent' : 'received'}`;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message`;
+            messageDiv.textContent = message;
+
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'timestamp';
+            timeSpan.textContent = formatTime(timestamp);
+
+            containerDiv.appendChild(messageDiv);
+            containerDiv.appendChild(timeSpan);
+            chatMessagesElement.appendChild(containerDiv);
+
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            // Normal axın olduğu üçün scroll-u sona qədər edirik
+            requestAnimationFrame(() => {
+                chatMessagesElement.scrollTop = chatMessagesElement.scrollHeight;
+            });
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '' || !activeChatRecipientId || !activeChatAdId) return;
+
+            if (socket) {
+                const now = Date.now();
+                socket.emit('sendMessage', {
+                    recipientId: activeChatRecipientId,
+                    adId: activeChatAdId,
+                    message: message,
+                    timestamp: now // Göndərilən vaxtı serverə göndəririk
+                });
+
+                // Vaxtı dərhal göstər
+                appendMessage(message, true, now);
+
+                messageInput.value = '';
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        fetchCurrentUser();
+    </script>
+</body>
+</html>

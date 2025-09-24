@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Hərrac Qalibi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --label-color: #555;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .winner-message {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .ad-details {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .ad-details p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .contact-info {
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .contact-info p {
+            margin: 5px 0;
+        }
+
+        .contact-info strong {
+            color: var(--primary-color);
+        }
+
+        .contact-info a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Təbrik edirik!</h2>
+    <p class="winner-message">Siz hərracın qalibisiniz!</p>
+    <div id="adDetails" class="ad-details">
+        <p>Elanın detalları yüklənir...</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const adId = window.location.pathname.split('/').pop();
+        const adDetailsContainer = document.getElementById('adDetails');
+
+        if (!adId) {
+            adDetailsContainer.innerHTML = '<p>Elan tapılmadı. Zəhmət olmasa, doğru səhifəyə daxil olduğunuzdan əmin olun.</p>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/getWinnerAdDetails/${adId}`);
+            if (response.ok) {
+                const ad = await response.json();
+                adDetailsContainer.innerHTML = `
+                    <p><strong>Başlıq:</strong> ${ad.title}</p>
+                    <p><strong>Son Qiymət:</strong> ${ad.currentPrice} AZN</p>
+                    <div class="contact-info">
+                        <p><strong>Satıcı:</strong> ${ad.seller_name}</p>
+                        <p><strong>Əlaqə:</strong> <a href="tel:${ad.seller_phone}">${ad.seller_phone}</a></p>
+                    </div>
+                    <div class="contact-info">
+                        <p>Zəhmət olmasa, elan sahibi ilə əlaqə saxlayaraq alış-verişi tamamlayın.</p>
+                    </div>
+                `;
+            } else if (response.status === 404) {
+                adDetailsContainer.innerHTML = '<p>Bu hərrac elanı tapılmadı və ya hələ bitməyib.</p>';
+            } else if (response.status === 403) {
+                adDetailsContainer.innerHTML = '<p>Bu elanın qalibi siz deyilsiniz.</p>';
+            } else {
+                adDetailsContainer.innerHTML = '<p>Elanın detalları yüklənərkən xəta baş verdi.</p>';
+            }
+        } catch (error) {
+            console.error('Xəta:', error);
+            adDetailsContainer.innerHTML = '<p>Elanın detalları yüklənərkən xəta baş verdi.</p>';
+        }
+    });
+</script>
+
+</body>
+</html>

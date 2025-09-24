@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesab Məlumatları</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --label-color: #555;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        /* Navbar Stili */
+        .navbar {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left, .nav-center, .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-left a.logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        
+        .nav-left a.logo:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-left a.logo img {
+            height: 40px;
+            margin-right: 12px;
+        }
+
+        .nav-left a, .nav-right a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            margin-left: 25px;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-left a:hover, .nav-right a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-center .search-box {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background-color: var(--light-bg);
+            max-width: 550px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-center .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            color: var(--text-color);
+            flex-grow: 1;
+        }
+        
+        .nav-center .search-box button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-center .search-box button:hover {
+            background-color: #d35400;
+        }
+        
+        .profile-menu {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-menu .profile-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 16px;
+            padding: 10px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background-color: var(--light-bg);
+            transition: background-color 0.3s;
+        }
+
+        .profile-menu .profile-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        .profile-menu .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: var(--card-bg);
+            min-width: 220px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+
+        .profile-menu .dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            color: var(--text-color);
+            font-weight: 400;
+            transition: background-color 0.3s;
+            margin: 0;
+        }
+
+        .profile-menu .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .profile-menu .dropdown a i {
+            margin-right: 12px;
+            color: var(--accent-color);
+        }
+
+        /* Account Page Styles */
+        .account-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .account-container h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .account-form label {
+            font-weight: 600;
+            color: var(--label-color);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .account-form input[type="text"],
+        .account-form input[type="email"],
+        .account-form input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .account-form input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        
+        .account-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .account-form button {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .account-form button:hover {
+            background-color: #d35400;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a href="/dashboard" class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Tap.az_logo.svg/2560px-Tap.az_logo.svg.png" alt="Logo">
+            Tap.az
+        </a>
+        <a href="/dashboard">Kataloq</a>
+    </div>
+    <div class="nav-center">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Əşya və ya xidmət axtarışı">
+            <button id="filterBtn">Filterlər</button>
+            <button id="searchBtn">Axtar</button>
+        </div>
+    </div>
+    <div class="nav-right" id="profileMenu">
+        <a href="/addAdPage" class="add-ad-btn">+ Yeni Elan</a>
+        <div class="profile-menu">
+            <a id="profileBtn" class="profile-btn"><i class="fas fa-user-circle"></i> Profil ▾</a>
+            <div class="dropdown" id="profileDropdown">
+                <a href="/myAdsPage"><i class="fas fa-list-alt"></i> Paylaşılan Elanlar</a>
+                <a href="/accountPage"><i class="fas fa-cog"></i> Hesab Məlumatları</a>
+                <a href="/logout"><i class="fas fa-sign-out-alt"></i> Çıxış</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="account-container">
+    <h1>Hesab Məlumatları</h1>
+    <form action="/updateAccount" method="post" class="account-form">
+        <div class="form-group">
+            <label for="username">İstifadəçi Adı:</label>
+            <input type="text" id="username" name="username" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="email">E-poçt:</label>
+            <input type="email" id="email" name="email" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Telefon Nömrəsi:</label>
+            <input type="text" id="phone" name="phone" value="">
+        </div>
+        <hr style="border: 1px solid var(--border-color); margin: 30px 0;">
+        <div class="form-group">
+            <label for="new_password">Yeni Şifrə:</label>
+            <input type="password" id="new_password" name="new_password">
+        </div>
+        <div class="form-group">
+            <label for="confirm_password">Yeni Şifrə (təkrar):</label>
+            <input type="password" id="confirm_password" name="confirm_password">
+        </div>
+        <button type="submit">Məlumatları Yenilə</button>
+    </form>
+</div>
+
+<script>
+    // Navbar Script
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', () => {
+        profileDropdown.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>

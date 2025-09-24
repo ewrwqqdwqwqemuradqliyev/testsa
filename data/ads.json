@@ -1,0 +1,702 @@
+[
+  {
+    "id": 23,
+    "title": "qwewqe",
+    "description": "dasdsa",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1758150261653.png"
+    ],
+    "adCode": "mfol9s4880w519lxiu4",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "sdsdsadsa"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 22,
+    "title": "asdsad",
+    "description": "sadadas",
+    "category": "Elektronika",
+    "subcategory": "Komputerlər",
+    "ad_type": "auction",
+    "currentPrice": 345,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757985960000,
+    "images": [
+      "/uploads/1757985899031.png"
+    ],
+    "adCode": "mflvex41yck0yutd4pf",
+    "userId": 1756724556035,
+    "bids": [
+      {
+        "userId": 1756724556035,
+        "user": "s4reux",
+        "amount": 345,
+        "timestamp": 1757985910423
+      }
+    ],
+    "properties": {
+      "seller_name": "sadsada"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": true
+  },
+  {
+    "id": 21,
+    "title": "asdsdsa",
+    "description": "sadsad",
+    "category": "Hobbi və asudə",
+    "subcategory": "Kolleksiya",
+    "ad_type": "fixed_price",
+    "currentPrice": 232,
+    "startPrice": 0,
+    "buyNowPrice": 232,
+    "endTime": null,
+    "images": [
+      "/uploads/1757876219828.png"
+    ],
+    "adCode": "mfk2443bzkjh2nls1ys",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "sadsada"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 20,
+    "title": "asdsada",
+    "description": "asdsadas",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "auction",
+    "currentPrice": 432,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757871960000,
+    "images": [
+      "/uploads/1757871862133.png"
+    ],
+    "adCode": "mfjzipob6f91uczpc0x",
+    "userId": 1756724556035,
+    "bids": [
+      {
+        "userId": 1756724556035,
+        "user": "s4reux",
+        "amount": 432,
+        "timestamp": 1757871868195
+      }
+    ],
+    "properties": {
+      "seller_name": "sadsada"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": true
+  },
+  {
+    "id": 19,
+    "title": "wqekwqnewq",
+    "description": "wewqewq",
+    "category": "Hobbi və asudə",
+    "subcategory": "Kolleksiya",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [],
+    "adCode": "mfjzagf82n1kmbuzn4x",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "sdsdsadsa"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 18,
+    "title": "adsasd",
+    "description": "sadsad",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757871377576.png"
+    ],
+    "adCode": "mfjz8bsc5y7ujx4e1i3",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "qwewqe"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 17,
+    "title": "sadsadas",
+    "description": "sadasdsad",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "fixed_price",
+    "currentPrice": 1123,
+    "startPrice": 0,
+    "buyNowPrice": 1123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757871325622.png"
+    ],
+    "adCode": "mfjz77p6b1sbm15exks",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "qwewqe"
+    },
+    "seller_phone": "waeawewaewae",
+    "isEnded": false
+  },
+  {
+    "id": 16,
+    "title": "wqewqe",
+    "description": "weqweq",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757871289796.png"
+    ],
+    "adCode": "mfjz6g27hd0xiec8kkt",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "qwewqe"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 14,
+    "title": "qwewqewq",
+    "description": "werewrrew",
+    "category": "Hobbi və asudə",
+    "subcategory": "Oyunlar və konsollar",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757866837815.png"
+    ],
+    "adCode": "mfjwj0vw39t65jvn0jh",
+    "userId": 1756727533452,
+    "bids": [],
+    "properties": {
+      "seller_name": "murdadd",
+      "seller_phone": "0706262922"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 13,
+    "title": "asdksad'sa",
+    "description": "sadsadsa",
+    "category": "Ev və bağ üçün",
+    "subcategory": "Qab-qacaq və mətbəx ləvazimatları",
+    "ad_type": "auction",
+    "currentPrice": 123,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757675820000,
+    "images": [
+      "/uploads/1757675723403.png",
+      "/uploads/1757675723406.png",
+      "/uploads/1757675723408.png"
+    ],
+    "adCode": "mfgqqs2a7x6xspzpzzb",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "qwewqe",
+      "contact_number": "undefined"
+    },
+    "isEnded": true
+  },
+  {
+    "id": 12,
+    "title": "weqweqw",
+    "description": "wqeqewq",
+    "category": "Şəxsi əşyalar",
+    "subcategory": "Ayaqqabılar",
+    "ad_type": "auction",
+    "currentPrice": 123,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757675100000,
+    "images": [
+      "/uploads/1757675006815.png",
+      "/uploads/1757675006817.png",
+      "/uploads/1757675006823.png"
+    ],
+    "adCode": "mfgqbf56cewi60uvhli",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "sdsdsadsa",
+      "contact_number": "90432408932"
+    },
+    "isEnded": true
+  },
+  {
+    "id": 11,
+    "title": "asdsadsad",
+    "description": "asdasda",
+    "category": "Hobbi və asudə",
+    "subcategory": "Kolleksiya",
+    "ad_type": "auction",
+    "currentPrice": 1234,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757674620000,
+    "images": [
+      "1757674554500.png",
+      "1757674554505.png",
+      "1757674554508.png"
+    ],
+    "adCode": "mfgq1q4y3mo1hkhz0z5",
+    "userId": 1756727533451,
+    "bids": [
+      {
+        "userId": 1756727533451,
+        "user": "x4reuxr",
+        "amount": 1234,
+        "timestamp": 1757674578292
+      }
+    ],
+    "properties": {
+      "seller_name": "qwewqe",
+      "contact_number": "90432408932"
+    },
+    "isEnded": true
+  },
+  {
+    "id": 10,
+    "title": "aldksalkdjsalkd",
+    "description": "asdasda",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "auction",
+    "currentPrice": 123,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757674500000,
+    "images": [
+      "1757674511429.png",
+      "1757674511431.png",
+      "1757674511434.png",
+      "1757674511437.png"
+    ],
+    "adCode": "mfgq0swfs2gs5a2cz9",
+    "userId": 1756727533451,
+    "bids": [],
+    "properties": {
+      "seller_name": "murdadd",
+      "contact_number": "213213"
+    },
+    "isEnded": true
+  },
+  {
+    "id": 9,
+    "title": "adsadasda",
+    "description": "sadasda",
+    "category": "Hobbi və asudə",
+    "subcategory": "Kolleksiya",
+    "ad_type": "auction",
+    "currentPrice": 123,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757671680000,
+    "images": [
+      "1757671692891.png",
+      "1757671692893.png",
+      "1757671692897.png",
+      "1757671692901.png"
+    ],
+    "adCode": "mfgoce3tp04y1j8yzcn",
+    "userId": 1756727533451,
+    "bids": [],
+    "properties": {
+      "seller_name": "murad",
+      "contact_number": "90432408932"
+    },
+    "isEnded": true
+  },
+  {
+    "id": 8,
+    "title": "2321321",
+    "description": "2131",
+    "category": "Hobbi və asudə",
+    "subcategory": "Kolleksiya",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "image": "1757621382526.png",
+    "adCode": "mffue2dbtx0rv75jgd8",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "sdsdsadsa",
+      "contact_number": "213213"
+    },
+    "seller_info": "s4reux",
+    "isEnded": false
+  },
+  {
+    "id": 7,
+    "title": "qewqeq",
+    "description": "ewqewq",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "image": "1757621300381.png",
+    "adCode": "mffucazkq0zxft31co",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "130",
+      "contact_number": "undefined"
+    },
+    "seller_info": "s4reux",
+    "isEnded": false
+  },
+  {
+    "id": 6,
+    "title": "wqewqewq",
+    "description": "qweqwe",
+    "category": "Ev və bağ üçün",
+    "subcategory": "Bağ alətləri və ləvazimatları",
+    "ad_type": "auction",
+    "currentPrice": 23432,
+    "startPrice": 23432,
+    "buyNowPrice": 0,
+    "endTime": 1757621220000,
+    "image": "1757621133574.png",
+    "adCode": "mffu8qa2nto1clmsirb",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "sdsdsadsa",
+      "contact_number": "213213"
+    },
+    "seller_info": "s4reux",
+    "isEnded": true
+  },
+  {
+    "id": 5,
+    "title": "asdsada",
+    "description": "sadasd",
+    "category": "Ev və bağ üçün",
+    "subcategory": "Qab-qacaq və mətbəx ləvazimatları",
+    "ad_type": "auction",
+    "currentPrice": 123,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757621100000,
+    "image": "1757621102868.png",
+    "adCode": "mffu82l22pp0hn7dgb9",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "sadsada",
+      "contact_number": "wqe"
+    },
+    "seller_info": "s4reux",
+    "isEnded": true
+  },
+  {
+    "id": 4,
+    "title": "wqewqe",
+    "description": "sadasda",
+    "category": "Xidmətlər və biznes",
+    "subcategory": "Tibb və gözəllik",
+    "ad_type": "auction",
+    "currentPrice": 1234,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757620680000,
+    "image": "1757620670984.png",
+    "adCode": "mfftytcawhqmmui0yp",
+    "userId": 1756724556035,
+    "bids": [
+      {
+        "userId": 1756724556035,
+        "user": "s4reux",
+        "amount": 1234,
+        "timestamp": 1757620676772
+      }
+    ],
+    "properties": {
+      "seller_name": "murad",
+      "contact_number": "90432408932"
+    },
+    "seller_info": "s4reux",
+    "isEnded": true
+  },
+  {
+    "id": 3,
+    "title": "123",
+    "description": "qwewqe",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "auction",
+    "currentPrice": 1234,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757620260000,
+    "image": "1757620232018.png",
+    "adCode": "mfftpemvluqs7ld4vsr",
+    "userId": 1756724556035,
+    "bids": [
+      {
+        "userId": 1756724556035,
+        "user": "s4reux",
+        "amount": 1234,
+        "timestamp": 1757620237133
+      }
+    ],
+    "properties": {
+      "seller_name": "123",
+      "contact_number": "90432408932"
+    },
+    "seller_info": "s4reux",
+    "isEnded": true
+  },
+  {
+    "id": 2,
+    "title": "wweq'ewqe;wq",
+    "description": "qwejqwe;lqw",
+    "category": "Elektronika",
+    "subcategory": "Telefonlar",
+    "ad_type": "auction",
+    "currentPrice": 123,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757620200000,
+    "image": "1757620188015.png",
+    "adCode": "mfftogohjhpjt6hosur",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "murdadd",
+      "contact_number": "wqe"
+    },
+    "seller_info": "s4reux",
+    "isEnded": true
+  },
+  {
+    "id": 1,
+    "title": "12321312",
+    "description": "qwewqe",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "auction",
+    "currentPrice": 145,
+    "startPrice": 123,
+    "buyNowPrice": 0,
+    "endTime": 1757620140000,
+    "image": "1757620113835.png",
+    "adCode": "mfftmvfy3c444an5fxj",
+    "userId": 1756724556035,
+    "bids": [
+      {
+        "userId": 1756724556035,
+        "user": "s4reux",
+        "amount": 145,
+        "timestamp": 1757620122109
+      }
+    ],
+    "properties": {
+      "seller_name": "130",
+      "contact_number": "undefined"
+    },
+    "seller_info": "s4reux",
+    "isEnded": true
+  },
+  {
+    "id": 2,
+    "title": "as;ldsa;ldksa",
+    "description": "as.dsad;lsad",
+    "category": "Hobbi və asudə",
+    "subcategory": "Oyunlar və konsollar",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757867972629.png",
+      "/uploads/1757867972631.png",
+      "/uploads/1757867972637.png",
+      "/uploads/1757867972638.png"
+    ],
+    "adCode": "mfjx7ciqq1fgsxe13ba",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "qwewqe",
+      "seller_phone": "0706262922"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 3,
+    "title": "wewqewq",
+    "description": "asdsad",
+    "category": "Elektronika",
+    "subcategory": "Planşetlər",
+    "ad_type": "fixed_price",
+    "currentPrice": 1234,
+    "startPrice": 0,
+    "buyNowPrice": 1234,
+    "endTime": null,
+    "images": [
+      "/uploads/1757868639633.png"
+    ],
+    "adCode": "mfjxln6iyolgekmf8jm",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "murdadd",
+      "seller_phone": "0706262922"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 4,
+    "title": "qewqewq",
+    "description": "qwewqe",
+    "category": "Elektronika",
+    "subcategory": "Komputerlər",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757869086151.png",
+      "/uploads/1757869086157.png",
+      "/uploads/1757869086159.png"
+    ],
+    "adCode": "mfjxv7pw4hhe5s1go7x",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "murdadd",
+      "seller_phone": "0705252822"
+    },
+    "seller_phone": "0705252822",
+    "isEnded": false
+  },
+  {
+    "id": 5,
+    "title": "werokewrw",
+    "description": "werewr",
+    "category": "Hobbi və asudə",
+    "subcategory": "Oyunlar və konsollar",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757870467594.png"
+    ],
+    "adCode": "mfjyotn8w25t0a7z5q",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "werewr",
+      "seller_phone": "0706262922"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 6,
+    "title": "zxcxzcz",
+    "description": "dasdsad",
+    "category": "Elektronika",
+    "subcategory": "Televizorlar",
+    "ad_type": "fixed_price",
+    "currentPrice": 213,
+    "startPrice": 0,
+    "buyNowPrice": 213,
+    "endTime": null,
+    "images": [
+      "/uploads/1757870540726.png"
+    ],
+    "adCode": "mfjyqe2jaamj7e806ps",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "qwewqe",
+      "seller_phone": "0706262922"
+    },
+    "seller_phone": "0706262922",
+    "isEnded": false
+  },
+  {
+    "id": 15,
+    "title": "qweqweq",
+    "description": "wqewqeqw",
+    "category": "Nəqliyyat",
+    "subcategory": "Su nəqliyyatı",
+    "ad_type": "fixed_price",
+    "currentPrice": 123,
+    "startPrice": 0,
+    "buyNowPrice": 123,
+    "endTime": null,
+    "images": [
+      "/uploads/1757871053244.png"
+    ],
+    "adCode": "mfjz1dj4eev6cd1dwys",
+    "userId": 1756724556035,
+    "bids": [],
+    "properties": {
+      "seller_name": "qwewqe",
+      "seller_phone": "waeawewaewae"
+    },
+    "seller_phone": "waeawewaewae",
+    "isEnded": false
+  }
+]

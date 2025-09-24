@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Filterlər</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; background:#f4f4f4; margin:0; padding:0; }
+        .navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-left, .nav-center, .nav-right { display: flex; align-items: center; }
+        .nav-left a.logo { display: flex; align-items: center; text-decoration: none; font-size: 24px; font-weight: bold; color: #34495e; transition: color 0.3s ease; }
+        .nav-left a.logo:hover { color: #e67e22; }
+        .nav-left a.logo img { height: 36px; margin-right: 10px; }
+        .nav-left a, .nav-right a { text-decoration: none; color: #555; font-weight: 500; margin-left: 20px; font-size: 16px; transition: color 0.3s ease; }
+        .nav-left a:hover, .nav-right a:hover { color: #e67e22; }
+        .nav-center .search-box { display: flex; border: 1px solid #e0e0e0; border-radius: 25px; background-color: #f8f9fa; width: 500px; overflow: hidden; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05); }
+        .nav-center .search-box input, .nav-center .search-box select { border: none; background: transparent; outline: none; padding: 10px 15px; font-size: 14px; color: #333; }
+        .nav-center .search-box input { flex-grow: 1; }
+        .nav-center .search-box button { background-color: #e67e22; color: white; border: none; padding: 10px 20px; cursor: pointer; transition: background-color 0.3s ease; }
+        .nav-center .search-box button:hover { background-color: #d35400; }
+        .profile-menu { position: relative; cursor: pointer; }
+        .profile-menu .profile-btn { display: flex; align-items: center; color: #555; font-weight: 500; font-size: 16px; padding: 8px 15px; border: 1px solid #e0e0e0; border-radius: 20px; background-color: #f8f9fa; transition: background-color 0.3s; }
+        .profile-menu .profile-btn:hover { background-color: #e9ecef; }
+        .profile-menu .dropdown { display: none; position: absolute; top: 50px; right: 0; background-color: #ffffff; min-width: 200px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; padding: 10px 0; }
+        .profile-menu .dropdown a { display: block; padding: 12px 20px; color: #333; font-weight: normal; transition: background-color 0.3s; margin: 0; }
+        .profile-menu .dropdown a:hover { background-color: #f1f1f1; }
+
+        .filter-container { max-width: 800px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .filter-container h1 { text-align: center; color: #333; margin-bottom: 25px; }
+        .filter-form label, .filter-form input, .filter-form select, .filter-form button { display: block; width: 100%; margin-bottom: 15px; }
+        .filter-form select, .filter-form input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        .filter-form button { padding: 12px; background: #e67e22; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; font-weight: bold; transition: background-color 0.3s; }
+        .filter-form button:hover { background: #d35400; }
+        .dynamic-filters { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a href="/dashboard" class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Tap.az_logo.svg/2560px-Tap.az_logo.svg.png" alt="Logo">
+            Tap.az
+        </a>
+        <a href="/dashboard">Kataloq</a>
+    </div>
+    <div class="nav-center">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Əşya və ya xidmət axtarışı">
+            <button id="filterBtn">Filterlər</button>
+            <button id="searchBtn">Axtar</button>
+        </div>
+    </div>
+    <div class="nav-right" id="profileMenu">
+        <a href="/addAdPage" class="add-ad-btn">+ Yeni Elan</a>
+        <div class="profile-menu">
+            <a id="profileBtn" class="profile-btn">Profil ▾</a>
+            <div class="dropdown" id="profileDropdown">
+                <a href="/myAdsPage">Paylaşılan Elanlar</a>
+                <a href="/accountPage">Hesab Məlumatları</a>
+                <a href="/logout">Çıxış</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="filter-container">
+    <h1>Filterlər</h1>
+    <form id="filterForm">
+        <label for="category">Kateqoriya seçin:</label>
+        <select id="category" name="category" required>
+            <option value="">Kateqoriya seçin</option>
+            <option value="Uşaq aləmi">Uşaq aləmi</option>
+            <option value="Şəxsi əşyalar">Şəxsi əşyalar</option>
+            <option value="Ev və bağ üçün">Ev və bağ üçün</option>
+            <option value="Elektronika">Elektronika</option>
+            <option value="Hobbi və asudə">Hobbi və asudə</option>
+            <option value="Nəqliyyat">Nəqliyyat</option>
+            <option value="Daşınmaz əmlak">Daşınmaz əmlak</option>
+            <option value="İş elanları">İş elanları</option>
+            <option value="Heyvanlar">Heyvanlar</option>
+            <option value="Xidmətlər və biznes">Xidmətlər və biznes</option>
+        </select>
+
+        <div id="dynamic-fields" class="dynamic-filters">
+            </div>
+
+        <button type="submit">Axtarışı Filterlə</button>
+    </form>
+</div>
+
+<script>
+    // Navbar script
+    const profileBtn = document.querySelector('#profileMenu > .profile-menu > a');
+    const profileDropdown = document.getElementById('profileDropdown');
+    profileBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', ()=>{ profileDropdown.style.display = 'none'; });
+    profileDropdown.addEventListener('click', (e)=>{ e.stopPropagation(); });
+    
+    // Filterlər butonu
+    document.getElementById('filterBtn').addEventListener('click', () => {
+        window.location.href = '/filters';
+    });
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        const keyword = document.getElementById('searchInput').value;
+        window.location.href = `/dashboard?q=${encodeURIComponent(keyword)}`;
+    });
+
+    // Filter form script
+    const categories = {
+        'Uşaq aləmi': {},
+        'Şəxsi əşyalar': {},
+        'Ev və bağ üçün': {},
+        'Elektronika': {
+            'Telefonlar': ['Marka', 'Model', 'Yaddaş', 'RAM', 'Rəng'],
+            'Noutbuklar': ['Marka', 'Model', 'CPU', 'RAM', 'Yaddaş'],
+            'Komputerlər': ['Marka', 'Model', 'CPU', 'RAM', 'Yaddaş'],
+            'Televizorlar': ['Marka', 'Diaqonal'],
+            'Planşetlər': ['Marka', 'Yaddaş', 'Rəng']
+        },
+        'Hobbi və asudə': {},
+        'Nəqliyyat': {
+            'Avtomobillər': ['Marka', 'Model', 'Buraxılış ili', 'Mühərrik həcmi', 'Yanacaq növü'],
+            'Motosikletlər': ['Marka', 'Model', 'Mühərrik həcmi']
+        },
+        'Daşınmaz əmlak': {
+            'Mənzillər': ['Otaq sayı', 'Sahə', 'Mərtəbə'],
+            'Evlər': ['Otaq sayı', 'Sahə', 'Torpaq sahəsi'],
+            'Ofislər': ['Sahə', 'Mərtəbə']
+        },
+        'İş elanları': {},
+        'Heyvanlar': {},
+        'Xidmətlər və biznes': {}
+    };
+
+    const categorySelect = document.getElementById('category');
+    const dynamicFieldsDiv = document.getElementById('dynamic-fields');
+    const filterForm = document.getElementById('filterForm');
+
+    categorySelect.addEventListener('change', (event) => {
+        const selectedCategory = event.target.value;
+        dynamicFieldsDiv.innerHTML = '';
+        if (categories[selectedCategory] && Object.keys(categories[selectedCategory]).length > 0) {
+            const subcategorySelect = document.createElement('select');
+            subcategorySelect.id = 'subcategory';
+            subcategorySelect.name = 'subcategory';
+            subcategorySelect.innerHTML = '<option value="">Alt kateqoriya seçin</option>';
+
+            for (const sub in categories[selectedCategory]) {
+                const option = document.createElement('option');
+                option.value = sub;
+                option.textContent = sub;
+                subcategorySelect.appendChild(option);
+            }
+            dynamicFieldsDiv.appendChild(subcategorySelect);
+
+            subcategorySelect.addEventListener('change', (e) => {
+                const selectedSubcategory = e.target.value;
+                const existingFields = dynamicFieldsDiv.querySelectorAll('input, select');
+                existingFields.forEach(field => {
+                    if (field.id !== 'subcategory') {
+                        field.remove();
+                        const label = dynamicFieldsDiv.querySelector(`[for='${field.id}']`);
+                        if (label) label.remove();
+                    }
+                });
+
+                if (categories[selectedCategory][selectedSubcategory]) {
+                    const filters = categories[selectedCategory][selectedSubcategory];
+                    filters.forEach(filterName => {
+                        const label = document.createElement('label');
+                        label.textContent = `${filterName}:`;
+                        label.setAttribute('for', filterName.toLowerCase().replace(/ə/g, 'e').replace(/ı/g, 'i').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/\s/g, ''));
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.name = filterName.toLowerCase().replace(/ə/g, 'e').replace(/ı/g, 'i').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/\s/g, '');
+                        input.id = filterName.toLowerCase().replace(/ə/g, 'e').replace(/ı/g, 'i').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/\s/g, '');
+                        input.placeholder = filterName;
+                        dynamicFieldsDiv.appendChild(label);
+                        dynamicFieldsDiv.appendChild(input);
+                    });
+                }
+            });
+        }
+    });
+
+    filterForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(filterForm);
+        const params = new URLSearchParams();
+        
+        for (const [key, value] of formData.entries()) {
+            if (value) {
+                params.append(key, value);
+            }
+        }
+        window.location.href = `/dashboard?${params.toString()}`;
+    });
+</script>
+</body>
+</html>

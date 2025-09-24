@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Elanı Redaktə Et</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --label-color: #555;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left, .nav-center, .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-left a.logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        .nav-left a.logo:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-left a.logo img {
+            height: 40px;
+            margin-right: 12px;
+        }
+
+        .nav-left a, .nav-right a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            margin-left: 25px;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-left a:hover, .nav-right a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-center .search-box {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background-color: var(--light-bg);
+            max-width: 550px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-center .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            color: var(--text-color);
+            flex-grow: 1;
+        }
+
+        .nav-center .search-box button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-center .search-box button:hover {
+            background-color: #d35400;
+        }
+
+        .profile-menu {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-menu .profile-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 16px;
+            padding: 10px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background-color: var(--light-bg);
+            transition: background-color 0.3s;
+        }
+
+        .profile-menu .profile-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        .profile-menu .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: var(--card-bg);
+            min-width: 220px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+
+        .profile-menu .dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            color: var(--text-color);
+            font-weight: 400;
+            transition: background-color 0.3s;
+            margin: 0;
+        }
+
+        .profile-menu .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .profile-menu .dropdown a i {
+            margin-right: 12px;
+            color: var(--accent-color);
+        }
+
+        .page-container {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--label-color);
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(230, 126, 34, 0.5);
+        }
+
+        .image-preview-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .image-preview-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #d35400;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a href="/dashboard" class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Tap.az_logo.svg/2560px-Tap.az_logo.svg.png" alt="Logo">
+            Tap.az
+        </a>
+        <a href="/dashboard">Kataloq</a>
+    </div>
+    <div class="nav-center">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Əşya və ya xidmət axtarışı">
+            <button id="filterBtn">Filterlər</button>
+            <button id="searchBtn">Axtar</button>
+        </div>
+    </div>
+    <div class="nav-right" id="profileMenu">
+        <a href="/addAdPage" class="add-ad-btn">+ Yeni Elan</a>
+        <div class="profile-menu">
+            <a id="profileBtn" class="profile-btn"><i class="fas fa-user-circle"></i> Profil ▾</a>
+            <div class="dropdown" id="profileDropdown">
+                <a href="/myAdsPage"><i class="fas fa-list-alt"></i> Paylaşılan Elanlar</a>
+                <a href="/accountPage"><i class="fas fa-cog"></i> Hesab Məlumatları</a>
+                <a href="/logout"><i class="fas fa-sign-out-alt"></i> Çıxış</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-container">
+    <div class="form-container">
+        <h1>Elanı Redaktə Et</h1>
+        <form id="editAdForm" action="" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Başlıq</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Təsvir</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="category">Kateqoriya</label>
+                <select id="category" name="category" required></select>
+            </div>
+             <div class="form-group">
+                <label for="ad_type">Elan növü</label>
+                <select id="ad_type" name="ad_type" required>
+                    <option value="satish">Satış</option>
+                    <option value="auction">Hərrac</option>
+                </select>
+            </div>
+
+            <div id="price-fields">
+                <div class="form-group" id="buyNowPriceGroup">
+                    <label for="buyNowPrice">Qiymət (AZN)</label>
+                    <input type="number" id="buyNowPrice" name="buyNowPrice" min="0" step="any">
+                </div>
+                <div class="form-group hidden" id="auctionPriceGroup">
+                    <label for="startPrice">Başlanğıc Qiymət (AZN)</label>
+                    <input type="number" id="startPrice" name="startPrice" min="0" step="any">
+                </div>
+                <div class="form-group hidden" id="endTimeGroup">
+                    <label for="endTime">Hərracın bitmə vaxtı</label>
+                    <input type="datetime-local" id="endTime" name="endTime">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Şəkil (Dəyişmək üçün yeni şəkil seçin)</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+            <div class="image-preview-container">
+                <img id="image-preview" src="" alt="Elan şəkli">
+            </div>
+
+            <button type="submit" class="submit-btn">Yadda Saxla</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const editAdForm = document.getElementById('editAdForm');
+    const adId = window.location.pathname.split('/').pop();
+    const adTypeSelect = document.getElementById('ad_type');
+
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', () => {
+        profileDropdown.style.display = 'none';
+    });
+
+    // Qiymət və Auksion sahələrini idarə edən funksiya
+    function updatePriceFields(adType) {
+        const buyNowPriceGroup = document.getElementById('buyNowPriceGroup');
+        const auctionPriceGroup = document.getElementById('auctionPriceGroup');
+        const endTimeGroup = document.getElementById('endTimeGroup');
+
+        if (adType === 'auction') {
+            buyNowPriceGroup.classList.add('hidden');
+            auctionPriceGroup.classList.remove('hidden');
+            endTimeGroup.classList.remove('hidden');
+        } else {
+            buyNowPriceGroup.classList.remove('hidden');
+            auctionPriceGroup.classList.add('hidden');
+            endTimeGroup.classList.add('hidden');
+        }
+    }
+
+    adTypeSelect.addEventListener('change', (e) => {
+        updatePriceFields(e.target.value);
+    });
+
+    async function fetchAdData() {
+        try {
+            const response = await fetch(`/getAdById/${adId}`);
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                throw new Error('Elan məlumatları tapılmadı.');
+            }
+            const ad = await response.json();
+
+            document.getElementById('title').value = ad.title;
+            document.getElementById('description').value = ad.description;
+            document.getElementById('image-preview').src = ad.image ? `/uploads/${ad.image}` : 'https://via.placeholder.com/600x400.png?text=Şəkil+yoxdur';
+            document.getElementById('ad_type').value = ad.ad_type;
+
+            await populateCategories(ad.category);
+
+            updatePriceFields(ad.ad_type);
+
+            if (ad.ad_type === 'auction') {
+                document.getElementById('startPrice').value = ad.startPrice;
+                 if (ad.endTime) {
+                    const date = new Date(ad.endTime);
+                    const formattedDate = date.getFullYear() + '-' +
+                                          ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+                                          ('0' + date.getDate()).slice(-2) + 'T' +
+                                          ('0' + date.getHours()).slice(-2) + ':' +
+                                          ('0' + date.getMinutes()).slice(-2);
+                    document.getElementById('endTime').value = formattedDate;
+                }
+            } else {
+                document.getElementById('buyNowPrice').value = ad.buyNowPrice;
+            }
+        } catch (error) {
+            console.error('Xəta:', error);
+            alert('Elan yüklənərkən xəta baş verdi.');
+        }
+    }
+
+    async function populateCategories(selectedCategory) {
+        const categories = {
+            "Nəqliyyat": ["Avtomobillər", "Ehtiyat Hissələri"],
+            "Daşınmaz Əmlak": ["Evlər", "Torpaqlar"],
+            "Elektronika": ["Telefonlar", "Kompüterlər"],
+            "Ev və Bağ": ["Mebellər", "Dekorasiya"],
+            "Şəxsi Əşyalar": ["Geyimlər", "Aksesuar"],
+            "Hərrac": ["Məişət avadanlıqları", "Digər"]
+        };
+
+        const categorySelect = document.getElementById('category');
+        categorySelect.innerHTML = '';
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Kateqoriya seçin...';
+        defaultOption.disabled = true;
+        categorySelect.appendChild(defaultOption);
+
+        for (const category in categories) {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            if (category === selectedCategory) {
+                option.selected = true;
+            }
+            categorySelect.appendChild(option);
+        }
+    }
+
+    // Formanın göndərilməsini AJAX ilə idarə etmək üçün yeni kod
+    editAdForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(editAdForm);
+
+        try {
+            const response = await fetch(`/updateAd/${adId}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Elan uğurla redaktə olundu!');
+                window.location.href = '/myAdsPage'; // İstifadəçini elanları səhifəsinə yönləndir
+            } else if (response.status === 401) {
+                window.location.href = '/login';
+            } else {
+                const errorData = await response.json();
+                alert(`Elanı redaktə edərkən xəta baş verdi: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Xəta:', error);
+            alert('Elanı redaktə edərkən xəta baş verdi.');
+        }
+    });
+
+    fetchAdData();
+</script>
+</body>
+</html>
