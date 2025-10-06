@@ -142,6 +142,8 @@ app.get('/accountPage', isAuthenticated, (req, res) => {
 });
 
 app.get('/me', (req, res) => {
+  console.log('Session:', req.session); // Oturum verisini kontrol et
+  console.log('User ID:', req.session.userId);
   if (!req.session.userId) {
     return res.status(401).json({ error: 'User not authenticated' });
   }
@@ -610,3 +612,4 @@ setInterval(() => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
