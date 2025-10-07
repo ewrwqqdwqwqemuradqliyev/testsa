@@ -11,6 +11,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// QLOBAL DÜZƏLİŞ: Saat qurşağı fərqi (Azərbaycan üçün GMT+4)
+const TIMEZONE_OFFSET_MS = 4 * 60 * 60 * 1000;
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -141,9 +144,8 @@ app.get('/accountPage', isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'accountPage.html'));
 });
 
+// İstifadəçinin məlumatlarını almaq üçün yeni API
 app.get('/me', (req, res) => {
-  console.log('Session:', req.session); // Oturum verisini kontrol et
-  console.log('User ID:', req.session.userId);
   if (!req.session.userId) {
     return res.status(401).json({ error: 'User not authenticated' });
   }
@@ -151,6 +153,7 @@ app.get('/me', (req, res) => {
   if (!user) {
     return res.status(401).json({ error: 'User not found in data' });
   }
+  // Şifrəni göndərmirik
   res.json({ id: user.id, username: user.username, email: user.email, phone: user.phone });
 });
 
@@ -178,7 +181,7 @@ app.post('/updateAccount', isAuthenticated, (req, res) => {
 });
 
 // Ad and Page Routes (dashboard, addAdPage, myAdsPage, editAd, ads/:adCode)
-app.get('/dashboard', isAuthenticated, (req, res) => {
+app.get('/dashboard', (req, res) => { // isAuthenticated silindi ki, loginsiz daxil olmaq olsun
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
@@ -198,7 +201,7 @@ app.get('/ads/:adCode', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'ad.html'));
 });
 
-app.get('/filters', isAuthenticated, (req, res) => {
+app.get('/filters', (req, res) => { // isAuthenticated silindi
   res.sendFile(path.join(__dirname, 'public', 'filters.html'));
 });
 
@@ -308,6 +311,12 @@ app.post('/addAd', isAuthenticated, upload.array('images', 5), (req, res) => {
     }
   }
 
+  // DÜZƏLİŞİ TƏTBİQ EDIRİK: Hərrac vaxtına Timezone fərqini əlavə edirik
+  let finalEndTime = null;
+  if (ad_type === 'auction' && endTime) {
+      finalEndTime = new Date(endTime).getTime() + TIMEZONE_OFFSET_MS;
+  }
+
   const newAd = {
     id: ads.length > 0 ? Math.max(...ads.map(ad => ad.id)) + 1 : 1,
     title,
@@ -318,7 +327,7 @@ app.post('/addAd', isAuthenticated, upload.array('images', 5), (req, res) => {
     currentPrice,
     startPrice: parseFloat(startPrice) || 0,
     buyNowPrice: parseFloat(buyNowPrice) || 0,
-    endTime: ad_type === 'auction' ? new Date(endTime).getTime() : null,
+    endTime: finalEndTime, // YENİLƏNMİŞ DƏYƏR
     images,
     adCode,
     userId: req.session.userId,
@@ -352,8 +361,10 @@ app.post('/updateAd/:id', isAuthenticated, upload.array('images', 5), (req, res)
     ad.startPrice = parseFloat(startPrice) || ad.startPrice;
     ad.buyNowPrice = parseFloat(buyNowPrice) || ad.buyNowPrice;
     ad.endTime = endTime || ad.endTime;
+
+    // DÜZƏLİŞİ TƏTBİQ EDIRİK: Hərrac vaxtına Timezone fərqini əlavə edirik
     if (ad.ad_type === 'auction' && endTime) {
-      ad.endTime = new Date(endTime).getTime();
+      ad.endTime = new Date(endTime).getTime() + TIMEZONE_OFFSET_MS; // YENİLƏNMİŞ DƏYƏR
     }
 
     if (ad_type === 'auction') {
@@ -515,7 +526,6 @@ io.on('connection', (socket) => {
     saveData(chatsFilePath, chats);
 
     // DÜZƏLİŞ: Mesajı göndərəndən (socket) BAŞQA hər kəsə göndərir.
-    // Çünki göndərən artıq mesajı özündə göstərib (Optimistic Update).
     socket.to(chatRoomId).emit('newMessage', newMessage);
   });
 
@@ -586,7 +596,7 @@ setInterval(() => {
   const now = Date.now();
   let adsUpdated = false;
   ads.forEach((ad) => {
-    if (ad.ad_type === 'auction' && new Date(ad.endTime).getTime() < now && !ad.isEnded) {
+    if (ad.ad_type === 'auction' && ad.endTime && new Date(ad.endTime).getTime() < now && !ad.isEnded) {
       ad.isEnded = true;
       adsUpdated = true;
 
@@ -612,4 +622,3 @@ setInterval(() => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
