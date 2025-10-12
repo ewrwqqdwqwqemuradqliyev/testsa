@@ -7,11 +7,31 @@ const fs = require('fs');
 const http = require('http');
 const socketIo = require('socket.io');
 
+// ----------------------------------------------------------------------
+// CLOUDINARY İNTEGRASYONU İÇİN YENİ KOD BAŞLANGICI
+// ----------------------------------------------------------------------
+const dotenv = require('dotenv');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+// .env dosyasından değişkenleri yükle
+dotenv.config();
+
+// Cloudinary Konfigürasyonu
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+// ----------------------------------------------------------------------
+// CLOUDINARY İNTEGRASYONU İÇİN YENİ KOD SONU
+// ----------------------------------------------------------------------
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// QLOBAL DÜZƏLİŞ: Saat qurşağı fərqi (Azərbaycan üçün GMT+4)
+// QLOBAL DÜZELTME: Saat dilimi farkı (Azerbaycan için GMT+4, sadece bilgi için)
 const TIMEZONE_OFFSET_MS = 4 * 60 * 60 * 1000;
 
 // Middleware
@@ -72,16 +92,20 @@ let users = loadData(usersFilePath);
 let ads = loadData(adsFilePath);
 let chats = loadData(chatsFilePath);
 
+// ----------------------------------------------------------------------
 // File Uploads - Multer config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+// ----------------------------------------------------------------------
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'elan_sayti_uploads',
+    format: async (req, file) => 'jpg',
+    public_id: (req, file) => `ad-${Date.now()}-${file.originalname.split('.')[0]}`
   },
 });
+
 const upload = multer({ storage: storage });
+// ----------------------------------------------------------------------
 
 // Authentication Middleware
 const isAuthenticated = (req, res, next) => {
@@ -97,7 +121,7 @@ app.get('/', (req, res) => {
   res.redirect('/login');
 });
 
-// User Routes (register, login, logout, me, accountPage, updateAccount)
+// User Routes
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
@@ -106,7 +130,7 @@ app.post('/register', (req, res) => {
   const { username, email, password } = req.body;
   const userExists = users.find((u) => u.username === username || u.email === email);
   if (userExists) {
-    return res.send('İstifadəçi adı və ya e-poçt artıq mövcuddur!');
+    return res.send('Kullanıcı adı veya e-posta zaten mevcut!');
   }
   const newUser = { id: users.length > 0 ? users[users.length - 1].id + 1 : 1, username, email, password };
   users.push(newUser);
@@ -126,7 +150,7 @@ app.post('/login', (req, res) => {
     req.session.username = user.username;
     res.redirect('/dashboard');
   } else {
-    res.send('Yanlış e-poçt və ya şifrə');
+    res.send('Yanlış e-posta veya şifre');
   }
 });
 
@@ -144,16 +168,14 @@ app.get('/accountPage', isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'accountPage.html'));
 });
 
-// İstifadəçinin məlumatlarını almaq üçün yeni API
 app.get('/me', (req, res) => {
   if (!req.session.userId) {
-    return res.status(401).json({ error: 'User not authenticated' });
+    return res.status(401).json({ error: 'Kullanıcı oturumu açık değil' });
   }
   const user = users.find((u) => u.id === req.session.userId);
   if (!user) {
-    return res.status(401).json({ error: 'User not found in data' });
+    return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
   }
-  // Şifrəni göndərmirik
   res.json({ id: user.id, username: user.username, email: user.email, phone: user.phone });
 });
 
@@ -169,19 +191,19 @@ app.post('/updateAccount', isAuthenticated, (req, res) => {
       if (new_password === confirm_password) {
         user.password = new_password;
       } else {
-        return res.send('Yeni şifrələr uyğun gəlmir!');
+        return res.send('Yeni şifreler eşleşmiyor!');
       }
     }
     req.session.username = user.username;
     saveData(usersFilePath, users);
     res.redirect('/accountPage');
   } else {
-    res.status(404).send('İstifadəçi tapılmadı.');
+    res.status(404).send('Kullanıcı bulunamadı.');
   }
 });
 
-// Ad and Page Routes (dashboard, addAdPage, myAdsPage, editAd, ads/:adCode)
-app.get('/dashboard', (req, res) => { // isAuthenticated silindi ki, loginsiz daxil olmaq olsun
+// Ad and Page Routes
+app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
@@ -201,7 +223,7 @@ app.get('/ads/:adCode', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'ad.html'));
 });
 
-app.get('/filters', (req, res) => { // isAuthenticated silindi
+app.get('/filters', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'filters.html'));
 });
 
@@ -218,7 +240,7 @@ app.get('/chat/:recipientId/:adId', isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'chat.html'));
 });
 
-// API Routes for Ads (getUserAds, getAds, getAd/:adCode, getAdById/:adId, deleteAd)
+// API Routes for Ads
 app.get('/getUserAds', isAuthenticated, (req, res) => {
   const userAds = ads.filter((ad) => ad.userId === req.session.userId);
   res.json(userAds);
@@ -255,16 +277,16 @@ app.get('/getAds', (req, res) => {
     const formattedAds = filteredAds.map((ad) => {
       let priceText;
       if (ad.ad_type === 'auction') {
-        priceText = ad.currentPrice ? `${ad.currentPrice} AZN (hərrac)` : 'Hərrac';
+        priceText = ad.currentPrice ? `${ad.currentPrice} AZN (hârrac)` : 'Hârrac';
       } else {
-        priceText = ad.currentPrice ? `${ad.currentPrice} AZN` : 'Qiymət göstərilməyib';
+        priceText = ad.currentPrice ? `${ad.currentPrice} AZN` : 'Fiyat belirtilmemiş';
       }
       return { ...ad, priceDisplay: priceText };
     });
 
     res.json(formattedAds);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch ads' });
+    res.status(500).json({ error: 'İlanlar alınamadı' });
   }
 });
 
@@ -272,18 +294,16 @@ app.get('/getAd/:adCode', (req, res) => {
   const adCode = req.params.adCode;
   const ad = ads.find((a) => a.adCode === adCode);
   if (!ad) {
-    return res.status(404).json({ error: 'Elan tapılmadı' });
+    return res.status(404).json({ error: 'İlan bulunamadı' });
   }
 
   const adData = { ...ad };
   if (ad.ad_type === 'auction' && req.session.userId !== ad.userId) {
     if (!ad.isEnded) {
-        delete adData.seller_info;
-        delete adData.seller_phone;
+      delete adData.seller_info;
+      delete adData.seller_phone;
     }
-  } else if (ad.ad_type !== 'auction' && req.session.userId !== ad.userId) {
   }
-
   res.json(adData);
 });
 
@@ -291,16 +311,18 @@ app.get('/getAdById/:adId', isAuthenticated, (req, res) => {
   const adId = parseInt(req.params.adId);
   const ad = ads.find((a) => a.id === adId);
   if (!ad) {
-    return res.status(404).json({ error: 'Elan tapılmadı.' });
+    return res.status(404).json({ error: 'İlan bulunamadı.' });
   }
   res.json({ title: ad.title });
 });
 
+// addAd route
 app.post('/addAd', isAuthenticated, upload.array('images', 5), (req, res) => {
   const { title, description, category, subcategory, ad_type, startPrice, buyNowPrice, endTime, seller_info, seller_phone } = req.body;
 
   const adCode = Date.now().toString(36) + Math.random().toString(36).substr(2);
-  const images = req.files ? req.files.map(file => '/uploads/' + file.filename) : [];
+
+  const images = req.files ? req.files.map(file => file.path) : [];
 
   const currentPrice = ad_type === 'auction' ? parseFloat(startPrice) || 0 : parseFloat(buyNowPrice) || 0;
 
@@ -311,11 +333,23 @@ app.post('/addAd', isAuthenticated, upload.array('images', 5), (req, res) => {
     }
   }
 
-  // DÜZƏLİŞİ TƏTBİQ EDIRİK: Hərrac vaxtına Timezone fərqini əlavə edirik
+  // DÜZELTME: endTime kontrolü ve varsayılan değer
   let finalEndTime = null;
+  const now = Date.now();
   if (ad_type === 'auction' && endTime) {
-      finalEndTime = new Date(endTime).getTime() + TIMEZONE_OFFSET_MS;
+    const parsedEndTime = new Date(endTime).getTime();
+    // endTime gelecekte mi kontrolü
+    if (isNaN(parsedEndTime) || parsedEndTime <= now) {
+      console.warn('Geçersiz veya geçmiş endTime, varsayılan 5 dakika kullanılıyor:', endTime);
+      finalEndTime = now + 5 * 60 * 1000; // Varsayılan: 5 dakika sonrası
+    } else {
+      finalEndTime = parsedEndTime; // Doğrudan kullan, ofset ekleme/çıkarma yok
+    }
+  } else if (ad_type === 'auction') {
+    console.warn('endTime sağlanmadı, varsayılan 5 dakika kullanılıyor');
+    finalEndTime = now + 5 * 60 * 1000; // Varsayılan: 5 dakika sonrası
   }
+  console.log('Ham endTime:', endTime, 'İşlenmiş finalEndTime:', finalEndTime, 'Şu anki sunucu zamanı:', now, 'Sunucu zaman dilimi:', new Date().toString());
 
   const newAd = {
     id: ads.length > 0 ? Math.max(...ads.map(ad => ad.id)) + 1 : 1,
@@ -327,7 +361,7 @@ app.post('/addAd', isAuthenticated, upload.array('images', 5), (req, res) => {
     currentPrice,
     startPrice: parseFloat(startPrice) || 0,
     buyNowPrice: parseFloat(buyNowPrice) || 0,
-    endTime: finalEndTime, // YENİLƏNMİŞ DƏYƏR
+    endTime: finalEndTime,
     images,
     adCode,
     userId: req.session.userId,
@@ -342,7 +376,8 @@ app.post('/addAd', isAuthenticated, upload.array('images', 5), (req, res) => {
   res.redirect('/dashboard');
 });
 
-app.post('/updateAd/:id', isAuthenticated, upload.array('images', 5), (req, res) => {
+// updateAd route
+app.post('/updateAd/:id', isAuthenticated, upload.array('images', 5), async (req, res) => {
   const adId = parseInt(req.params.id);
   const adIndex = ads.findIndex((ad) => ad.id === adId && ad.userId === req.session.userId);
 
@@ -360,12 +395,22 @@ app.post('/updateAd/:id', isAuthenticated, upload.array('images', 5), (req, res)
 
     ad.startPrice = parseFloat(startPrice) || ad.startPrice;
     ad.buyNowPrice = parseFloat(buyNowPrice) || ad.buyNowPrice;
-    ad.endTime = endTime || ad.endTime;
 
-    // DÜZƏLİŞİ TƏTBİQ EDIRİK: Hərrac vaxtına Timezone fərqini əlavə edirik
+    // DÜZELTME: endTime kontrolü ve varsayılan değer
+    const now = Date.now();
     if (ad.ad_type === 'auction' && endTime) {
-      ad.endTime = new Date(endTime).getTime() + TIMEZONE_OFFSET_MS; // YENİLƏNMİŞ DƏYƏR
+      const parsedEndTime = new Date(endTime).getTime();
+      if (isNaN(parsedEndTime) || parsedEndTime <= now) {
+        console.warn('Geçersiz veya geçmiş endTime, varsayılan 5 dakika kullanılıyor:', endTime);
+        ad.endTime = now + 5 * 60 * 1000; // Varsayılan: 5 dakika sonrası
+      } else {
+        ad.endTime = parsedEndTime; // Doğrudan kullan, ofset ekleme/çıkarma yok
+      }
+    } else if (ad.ad_type === 'auction' && !endTime) {
+      console.warn('endTime sağlanmadı, varsayılan 5 dakika kullanılıyor');
+      ad.endTime = now + 5 * 60 * 1000; // Varsayılan: 5 dakika sonrası
     }
+    console.log('Güncellenmiş endTime:', endTime, 'İşlenmiş ad.endTime:', ad.endTime, 'Şu anki sunucu zamanı:', now, 'Sunucu zaman dilimi:', new Date().toString());
 
     if (ad_type === 'auction') {
       ad.currentPrice = parseFloat(startPrice) || ad.currentPrice;
@@ -377,7 +422,7 @@ app.post('/updateAd/:id', isAuthenticated, upload.array('images', 5), (req, res)
 
     const properties = {};
     for (const key in req.body) {
-      if (!['title', 'description', 'category', 'subcategory', 'ad_type', 'startPrice', 'buyNowPrice', 'endTime', 'images'].includes(key)) {
+      if (!['title', 'description', 'category', 'subcategory', 'ad_type', 'startPrice', 'buyNowPrice', 'endTime', 'images', 'seller_info', 'seller_phone'].includes(key)) {
         properties[key] = req.body[key];
       }
     }
@@ -385,74 +430,76 @@ app.post('/updateAd/:id', isAuthenticated, upload.array('images', 5), (req, res)
 
     if (req.files && req.files.length > 0) {
       if (ad.images && Array.isArray(ad.images)) {
-        ad.images.forEach(imagePath => {
-          const oldImageName = path.basename(imagePath);
-          const oldImagePath = path.join(uploadsDir, oldImageName);
-          if (fs.existsSync(oldImagePath)) {
-            fs.unlinkSync(oldImagePath);
+        for (const imagePath of ad.images) {
+          try {
+            const publicId = imagePath.split('/').slice(-2).join('/').split('.')[0];
+            await cloudinary.uploader.destroy(publicId);
+          } catch (error) {
+            console.error('Cloudinary silme hatası (Update):', error);
           }
-        });
+        }
       }
-      ad.images = req.files.map(file => '/uploads/' + file.filename);
+      ad.images = req.files.map(file => file.path);
     }
 
     saveData(adsFilePath, ads);
     res.redirect('/myAdsPage');
   } else {
-    res.status(404).send('Elan tapılmadı və ya sizə aid deyil.');
+    res.status(404).send('İlan bulunamadı veya size ait değil.');
   }
 });
 
-app.delete('/deleteAd/:id', isAuthenticated, (req, res) => {
+app.delete('/deleteAd/:id', isAuthenticated, async (req, res) => {
   const adId = parseInt(req.params.id);
   const adIndex = ads.findIndex((ad) => ad.id === adId && ad.userId === req.session.userId);
   if (adIndex !== -1) {
     const ad = ads[adIndex];
+
     if (ad.images && Array.isArray(ad.images)) {
-      ad.images.forEach(imagePath => {
-        const imageName = path.basename(imagePath);
-        const fullImagePath = path.join(uploadsDir, imageName);
-        if (fs.existsSync(fullImagePath)) {
-          fs.unlinkSync(fullImagePath);
+      for (const imagePath of ad.images) {
+        try {
+          const publicId = imagePath.split('/').slice(-2).join('/').split('.')[0];
+          await cloudinary.uploader.destroy(publicId);
+        } catch (error) {
+          console.error('Cloudinary silme hatası (Delete):', error);
         }
-      });
+      }
     }
+
     ads.splice(adIndex, 1);
     saveData(adsFilePath, ads);
     res.sendStatus(200);
   } else {
-    res.status(404).send('Elan tapılmadı və ya sizə aid deyil.');
+    res.status(404).send('İlan bulunamadı veya size ait değil.');
   }
 });
-
 
 // Socket.io for live bidding and chat
 io.on('connection', (socket) => {
   const userId = socket.handshake.query.userId;
   if (!userId) {
-    console.log('User ID not provided, connection rejected or ignored.');
+    console.log('Kullanıcı ID sağlanmadı, bağlantı reddedildi.');
     return;
   }
-  console.log(`User ID connected: ${userId}`);
+  console.log(`Kullanıcı ID bağlandı: ${userId}`);
 
-  // Hərrac üçün Socket.io funksiyaları
   socket.on('joinAdRoom', (adId) => {
     socket.join(adId);
-    console.log(`User ${userId} joined room for ad ${adId}`);
+    console.log(`Kullanıcı ${userId} ilan odasına katıldı: ${adId}`);
   });
 
   socket.on('newBid', (data) => {
     const ad = ads.find((a) => a.id === data.adId);
     if (!ad || ad.ad_type !== 'auction' || ad.isEnded) {
-      return socket.emit('bidError', { message: 'Ad not found or is not an auction.' });
+      return socket.emit('bidError', { message: 'İlan bulunamadı veya hârrac değil.' });
     }
     if (data.amount <= ad.currentPrice) {
-      return socket.emit('bidError', { message: 'Təklifiniz mövcud qiymətdən yüksək olmalıdır.' });
+      return socket.emit('bidError', { message: 'Teklifiniz mevcut fiyattan yüksek olmalı.' });
     }
 
     const user = users.find((u) => u.id == userId);
     if (!user) {
-      return socket.emit('bidError', { message: 'Sessiya bitib, yenidən daxil olun.' });
+      return socket.emit('bidError', { message: 'Oturum kapandı, tekrar giriş yapın.' });
     }
 
     ad.currentPrice = data.amount;
@@ -468,11 +515,10 @@ io.on('connection', (socket) => {
     io.to(ad.id).emit('updateBid', { adId: ad.id, amount: ad.currentPrice, user: user.username });
   });
 
-  // Chat üçün Socket.io funksiyaları
   socket.on('joinChatRoom', ({ recipientId, adId }) => {
     const chatRoomId = [parseInt(userId), parseInt(recipientId), adId].sort((a, b) => a - b).join('_');
     socket.join(chatRoomId);
-    console.log(`User ${userId} joined chat room: ${chatRoomId}`);
+    console.log(`Kullanıcı ${userId} sohbet odasına katıldı: ${chatRoomId}`);
   });
 
   socket.on('sendMessage', (data) => {
@@ -482,7 +528,7 @@ io.on('connection', (socket) => {
     const numericAdId = parseInt(adId);
 
     if (senderId === numericRecipientId) {
-        return socket.emit('chatError', { message: 'Özünüzə mesaj göndərə bilməzsiniz.' });
+      return socket.emit('chatError', { message: 'Kendinize mesaj gönderemezsiniz.' });
     }
 
     const chatRoomId = [senderId, numericRecipientId, numericAdId].sort((a, b) => a - b).join('_');
@@ -492,26 +538,26 @@ io.on('connection', (socket) => {
     const recipient = users.find(u => u.id === numericRecipientId);
 
     if (!sender || !recipient || !ad) {
-        return socket.emit('chatError', { message: 'Söhbət başlatmaq mümkün olmadı.' });
+      return socket.emit('chatError', { message: 'Sohbet başlatılamadı.' });
     }
 
     let existingChat = chats.find(
       (c) =>
-      c.adId === numericAdId &&
-      ((c.senderId === senderId && c.recipientId === numericRecipientId) ||
-      (c.senderId === numericRecipientId && c.recipientId === senderId))
+        c.adId === numericAdId &&
+        ((c.senderId === senderId && c.recipientId === numericRecipientId) ||
+         (c.senderId === numericRecipientId && c.recipientId === senderId))
     );
 
     if (!existingChat) {
-        existingChat = {
-            id: chats.length > 0 ? chats[chats.length - 1].id + 1 : 1,
-            adId: numericAdId,
-            adTitle: ad.title,
-            senderId: senderId,
-            recipientId: numericRecipientId,
-            messages: [],
-        };
-        chats.push(existingChat);
+      existingChat = {
+        id: chats.length > 0 ? chats[chats.length - 1].id + 1 : 1,
+        adId: numericAdId,
+        adTitle: ad.title,
+        senderId: senderId,
+        recipientId: numericRecipientId,
+        messages: [],
+      };
+      chats.push(existingChat);
     }
 
     const newMessage = {
@@ -525,12 +571,11 @@ io.on('connection', (socket) => {
 
     saveData(chatsFilePath, chats);
 
-    // DÜZƏLİŞ: Mesajı göndərəndən (socket) BAŞQA hər kəsə göndərir.
     socket.to(chatRoomId).emit('newMessage', newMessage);
   });
 
   socket.on('disconnect', () => {
-    console.log(`User ${userId} disconnected`);
+    console.log(`Kullanıcı ${userId} bağlantıyı kesti`);
   });
 });
 
@@ -553,7 +598,7 @@ app.get('/api/chats', isAuthenticated, (req, res) => {
       recipientName: otherUser.username,
       adId: chat.adId,
       adTitle: ad.title,
-      lastMessage: lastMessage ? lastMessage.message : 'Hələ mesaj yoxdur',
+      lastMessage: lastMessage ? lastMessage.message : 'Henüz mesaj yok',
       timestamp: lastMessage ? lastMessage.timestamp : null
     };
   }).filter(Boolean).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -566,14 +611,14 @@ app.get('/api/chats/:recipientId/:adId', isAuthenticated, (req, res) => {
   const adId = parseInt(req.params.adId);
 
   if (isNaN(recipientId) || isNaN(adId)) {
-    return res.status(400).json({ error: 'Invalid recipient or ad ID' });
+    return res.status(400).json({ error: 'Geçersiz alıcı veya ilan ID' });
   }
 
   const chat = chats.find(
     (c) =>
-    c.adId === adId &&
-    ((c.senderId === userId && c.recipientId === recipientId) ||
-    (c.senderId === recipientId && c.recipientId === userId))
+      c.adId === adId &&
+      ((c.senderId === userId && c.recipientId === recipientId) ||
+       (c.senderId === recipientId && c.recipientId === userId))
   );
 
   if (!chat) {
@@ -583,12 +628,12 @@ app.get('/api/chats/:recipientId/:adId', isAuthenticated, (req, res) => {
 });
 
 app.get('/api/user/:userId', (req, res) => {
-    const user = users.find(u => u.id === parseInt(req.params.userId));
-    if (user) {
-        res.json({ username: user.username });
-    } else {
-        res.status(404).send('User not found.');
-    }
+  const user = users.find(u => u.id === parseInt(req.params.userId));
+  if (user) {
+    res.json({ username: user.username });
+  } else {
+    res.status(404).send('Kullanıcı bulunamadı.');
+  }
 });
 
 // Auction timer
@@ -596,7 +641,7 @@ setInterval(() => {
   const now = Date.now();
   let adsUpdated = false;
   ads.forEach((ad) => {
-    if (ad.ad_type === 'auction' && ad.endTime && new Date(ad.endTime).getTime() < now && !ad.isEnded) {
+    if (ad.ad_type === 'auction' && ad.endTime && ad.endTime < now && !ad.isEnded) {
       ad.isEnded = true;
       adsUpdated = true;
 
@@ -607,9 +652,9 @@ setInterval(() => {
       const sellerUser = users.find((u) => u.id === ad.userId);
 
       if (winnerId) {
-        console.log(`Auksion bitdi. Elan ID: ${ad.id}, Qalib: ${winnerUser.username}`);
+        console.log(`Hârrac bitti. İlan ID: ${ad.id}, Kazanan: ${winnerUser.username}`);
       } else {
-        console.log(`Auksion bitdi. Elan ID: ${ad.id}, Heç kim qalib gəlmədi.`);
+        console.log(`Hârrac bitti. İlan ID: ${ad.id}, Kazanan yok.`);
       }
     }
   });
@@ -621,4 +666,4 @@ setInterval(() => {
 }, 1000);
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Sunucu ${PORT} portunda çalışıyor`));
